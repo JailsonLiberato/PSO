@@ -2,9 +2,9 @@ package business;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import model.ChartItem;
-import model.Function;
 import model.Particle;
 import model.TopologyType;
 
@@ -17,68 +17,40 @@ public class PSOService {
 	private static final double COEFFICIENT2 = 2.05;
 	private static final double INERTIA = 0.8;
 
-	private List<Particle> particlesGlobal;
-	private List<Particle> particlesLocal;
-	private List<Particle> particlesFocal;
+	private List<Particle> particles;
 	private FunctionType functionType;
-	private List<Double> gBestGlobal;
-	private List<Double> gBestFocal;
-	private List<Double> gBestLocal;
+	private List<Double> gBest;
 
 	public PSOService() {
-		particlesGlobal = new ArrayList<>();
-		particlesLocal = new ArrayList<>();
-		particlesFocal = new ArrayList<>();
-		gBestGlobal = new ArrayList<>();
-		gBestFocal = new ArrayList<>();
-		gBestLocal = new ArrayList<>();
-
+		particles = new ArrayList<>();
+		gBest = new ArrayList<>();
 	}
 
-	public Function executeFunction(FunctionType functionType) {
+	public List<ChartItem> executeFunctionByTopology(FunctionType functionType, TopologyType topologyType) {
 		this.functionType = functionType;
-		initializeParticles(particlesGlobal);
-		initializeParticles(particlesLocal);
-		initializeParticles(particlesFocal);
-
+		initializeParticles(particles);
 		int countIterations = 0;
-		gBestGlobal.clear();
-		gBestFocal.clear();
-		gBestLocal.clear();
-		Function function = new Function();
-
-		List<ChartItem> chartItemsGlobal = new ArrayList<>();
-		List<ChartItem> chartItemsLocal = new ArrayList<>();
-		List<ChartItem> chartItemsFocal = new ArrayList<>();
-
+		gBest.clear();
+		List<ChartItem> chartItems = new ArrayList<>();
 		ChartItem chartItem = null;
+		if (TopologyType.FOCAL == topologyType) {
+			Random rand = new Random();
+			gBest = particles.get(rand.nextInt(30)).getPbest();
+		}
 		do {
-			executePSO(TopologyType.GLOBAL);
-			double media = mediaGBest(gBestGlobal);
-			chartItem = createChartItem(media, countIterations);
-			chartItemsGlobal.add(chartItem);
 
-			executePSO(TopologyType.LOCAL);
-			media = mediaGBest(gBestLocal);
-			chartItem = createChartItem(media, countIterations);
-			chartItemsLocal.add(chartItem);
-
-			executePSO(TopologyType.FOCAL);
-			media = mediaGBest(gBestFocal);
-			chartItem = createChartItem(media, countIterations);
-			chartItemsFocal.add(chartItem);
-
+			executePSO(topologyType, functionType);
+			double media = mediaGBest(gBest);
+			chartItem = createChartItem(media, countIterations, topologyType);
+			chartItems.add(chartItem);
 		} while (countIterations < NUMBER_MAX_ITERATIONS);
-		function.setGlobals(chartItemsGlobal);
-		function.setLocals(chartItemsLocal);
-		function.setFocals(chartItemsFocal);
-		return function;
+		return chartItems;
 	}
 
-	private ChartItem createChartItem(double media, int countIterations) {
+	private ChartItem createChartItem(double media, int countIterations, TopologyType topologyType) {
 		ChartItem chartItem = new ChartItem();
 		chartItem.setIteration(countIterations);
-		chartItem.setTopologyType(TopologyType.GLOBAL);
+		chartItem.setTopologyType(topologyType);
 		chartItem.setValue(media);
 		return chartItem;
 	}
@@ -92,51 +64,43 @@ public class PSOService {
 		return media;
 	}
 
-	private void executePSO(TopologyType topology) {
-		calculateFitness(topology);
-		updateGlobalBest(topology);
-		calculateVelocity(topology);
-		updatePosition(topology);
+	private void executePSO(TopologyType topologyType, FunctionType functionType) {
+		calculateFitness(topologyType, functionType);
+		if (TopologyType.FOCAL != topologyType) {
+			updateGlobalBest(topologyType, functionType);
+		}
+		calculateVelocity(topologyType);
+		updatePosition(topologyType);
 	}
 
-	private void calculateVelocity(TopologyType topology) {
-		List<Double> gBest = null;
-		List<Particle> particles = null;
-		if (TopologyType.GLOBAL == topology) {
-			gBest = gBestGlobal;
-			particles = particlesGlobal;
-		} else if (TopologyType.LOCAL == topology) {
-			gBest = gBestLocal;
-			particles = particlesLocal;
-		} else if (TopologyType.FOCAL == topology) {
-			gBest = gBestFocal;
-			particles = particlesFocal;
-		}
-
-		for (Particle particle : particles) {
-			particle.getVelocity().clear();
-			for (int i = 0; i < NUMBER_DIMENSIONS; i++) {
-				particle.getVelocity()
-						.add(INERTIA
-								+ COEFFICIENT1 * (Math.random() * 1)
-										* (particle.getPbest().get(i) - particle.getPosition().get(i))
-								+ COEFFICIENT2 * (Math.random() * 1) * (gBest.get(i) - particle.getPosition().get(i)));
+	private void calculateVelocity(TopologyType topologyType) {
+		if (TopologyType.GLOBAL == topologyType || TopologyType.FOCAL == topologyType) {
+			for (Particle particle : particles) {
+				particle.getVelocity().clear();
+				for (int i = 0; i < NUMBER_DIMENSIONS; i++) {
+					particle.getVelocity().add(INERTIA
+							+ COEFFICIENT1 * (Math.random() * 1)
+									* (particle.getPbest().get(i) - particle.getPosition().get(i))
+							+ COEFFICIENT2 * (Math.random() * 1) * (gBest.get(i) - particle.getPosition().get(i)));
+				}
+			}
+		} else {
+			for (Particle particle : particles) {
+				particle.getVelocity().clear();
+				for (int i = 0; i < NUMBER_DIMENSIONS; i++) {
+					particle.getVelocity()
+							.add(INERTIA
+									+ COEFFICIENT1 * (Math.random() * 1)
+											* (particle.getPbest().get(i) - particle.getPosition().get(i))
+									+ COEFFICIENT2 * (Math.random() * 1)
+											* (particle.getGbest().get(i) - particle.getPosition().get(i)));
+				}
 			}
 		}
 
 	}
 
-	private void updatePosition(TopologyType topology) {
-
-		List<Particle> particles = null;
-		if (TopologyType.GLOBAL == topology) {
-			particles = particlesGlobal;
-		} else if (TopologyType.LOCAL == topology) {
-			particles = particlesLocal;
-		} else if (TopologyType.FOCAL == topology) {
-			particles = particlesFocal;
-		}
-
+	private void updatePosition(TopologyType topologyType) {
 		for (Particle particle : particles) {
 			particle.getPosition().clear();
 			for (int i = 0; i < NUMBER_DIMENSIONS; i++) {
@@ -146,50 +110,76 @@ public class PSOService {
 
 	}
 
-	private void updateGlobalBest(TopologyType topology) {
-		List<Double> gBest = null;
-		List<Particle> particles = null;
-		if (TopologyType.GLOBAL == topology) {
-			gBest = gBestGlobal;
-			particles = particlesGlobal;
-		} else if (TopologyType.LOCAL == topology) {
-			gBest = gBestLocal;
-			particles = particlesLocal;
-		} else if (TopologyType.FOCAL == topology) {
-			gBest = gBestFocal;
-			particles = particlesFocal;
-		}
-
-		List<Double> temp = new ArrayList<>();
-		for (Particle particle : particles) {
-			particle.getPosition().clear();
-			for (int i = 0; i < NUMBER_DIMENSIONS; i++) {
-				if (gBest.get(i) > particle.getPbest().get(i)) {
-					temp.add(particle.getPbest().get(i));
-				} else {
-					temp.add(gBest.get(i));
+	private void updateGlobalBest(TopologyType topologyType, FunctionType functionType) {
+		if (TopologyType.GLOBAL == topologyType) {
+			for (Particle particle : particles) {
+				if (executeFunction(functionType, particle.getPbest(), gBest)) {
+					gBest = particle.getPbest();
 				}
 			}
-		}
-		gBest = temp;
-	}
+		} else if (TopologyType.LOCAL == topologyType) {
+			Particle beforeParticle = null;
+			Particle currentParticle = null;
+			Particle nextParticle = null;
+			for (int i = 0; i < particles.size(); i++) {
+				if (i == 0) {
+					beforeParticle = particles.get(particles.size());
+					currentParticle = particles.get(0);
+					nextParticle = particles.get(1);
+				} else if (i == particles.size()) {
+					beforeParticle = particles.get(particles.size() - 1);
+					currentParticle = particles.get(particles.size());
+					nextParticle = particles.get(0);
+				} else {
+					beforeParticle = particles.get(i - 1);
+					currentParticle = particles.get(i);
+					nextParticle = particles.get(i + 1);
+				}
 
-	private void calculateFitness(TopologyType topology) {
-
-		List<Particle> particles = null;
-		if (TopologyType.GLOBAL == topology) {
-			particles = particlesGlobal;
-		} else if (TopologyType.LOCAL == topology) {
-			particles = particlesLocal;
-		} else if (TopologyType.FOCAL == topology) {
-			particles = particlesFocal;
-		}
-		for (Particle particle : particles) {
-			for (int i = 0; i < NUMBER_DIMENSIONS; i++) {
+				if (executeFunction(functionType, beforeParticle.getPbest(), currentParticle.getPbest())) {
+					beforeParticle.setGbest(beforeParticle.getPbest());
+					currentParticle.setGbest(beforeParticle.getPbest());
+					nextParticle.setGbest(beforeParticle.getPbest());
+				}
+				if (executeFunction(functionType, currentParticle.getPbest(), nextParticle.getPbest())) {
+					beforeParticle.setGbest(currentParticle.getPbest());
+					currentParticle.setGbest(currentParticle.getPbest());
+					nextParticle.setGbest(currentParticle.getPbest());
+				}
+				if (executeFunction(functionType, nextParticle.getPbest(), beforeParticle.getPbest())) {
+					beforeParticle.setGbest(nextParticle.getPbest());
+					currentParticle.setGbest(nextParticle.getPbest());
+					nextParticle.setGbest(nextParticle.getPbest());
+				}
 
 			}
 		}
+	}
 
+	private void calculateFitness(TopologyType topologyType, FunctionType functionType) {
+		for (Particle particle : particles) {
+			if (executeFunction(functionType, particle.getPosition(), particle.getPbest())) {
+				particle.setPbest(particle.getPosition());
+			}
+		}
+
+	}
+
+	private boolean executeFunction(FunctionType functionType, List<Double> positions, List<Double> bestPositions) {
+		if (FunctionType.SPHERE == functionType) {
+			if (FunctionsUtil.sphereFunction(positions) < FunctionsUtil.sphereFunction(bestPositions)) {
+				return true;
+			}
+		} else if (FunctionType.RASTRINGIN == functionType) {
+			if (FunctionsUtil.rastringinFunction(positions) < FunctionsUtil.rastringinFunction(bestPositions)) {
+				return true;
+			}
+		} else if (FunctionType.ROSENBROCK == functionType) {
+			if (FunctionsUtil.rosenbrockFunction(positions) < FunctionsUtil.rosenbrockFunction(bestPositions)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void initializeParticles(List<Particle> particles) {
@@ -231,28 +221,20 @@ public class PSOService {
 		this.functionType = functionType;
 	}
 
-	public List<Particle> getParticlesGlobal() {
-		return particlesGlobal;
+	public List<Particle> getParticles() {
+		return particles;
 	}
 
-	public void setParticlesGlobal(List<Particle> particlesGlobal) {
-		this.particlesGlobal = particlesGlobal;
+	public void setParticles(List<Particle> particles) {
+		this.particles = particles;
 	}
 
-	public List<Particle> getParticlesLocal() {
-		return particlesLocal;
+	public List<Double> getgBest() {
+		return gBest;
 	}
 
-	public void setParticlesLocal(List<Particle> particlesLocal) {
-		this.particlesLocal = particlesLocal;
-	}
-
-	public List<Particle> getParticlesFocal() {
-		return particlesFocal;
-	}
-
-	public void setParticlesFocal(List<Particle> particlesFocal) {
-		this.particlesFocal = particlesFocal;
+	public void setgBest(List<Double> gBest) {
+		this.gBest = gBest;
 	}
 
 }

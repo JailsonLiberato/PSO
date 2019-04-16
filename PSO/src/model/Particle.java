@@ -8,6 +8,7 @@ public class Particle {
 	private List<Double> position;
 	private List<Double> velocity;
 	private List<Double> pbest;
+	private List<Double> gbest;
 
 	public Particle() {
 		position = new ArrayList<>();
@@ -37,6 +38,14 @@ public class Particle {
 
 	public void setPbest(List<Double> pbest) {
 		this.pbest = pbest;
+	}
+
+	public List<Double> getGbest() {
+		return gbest;
+	}
+
+	public void setGbest(List<Double> gbest) {
+		this.gbest = gbest;
 	}
 
 }

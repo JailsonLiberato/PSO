@@ -1,8 +1,12 @@
 package ui;
 
+import java.util.List;
+
 import business.FunctionType;
 import business.PSOService;
+import model.ChartItem;
 import model.Function;
+import model.TopologyType;
 
 public class Main {
 
@@ -12,8 +16,11 @@ public class Main {
 
 		Thread threadSphere = new Thread() {
 			public void run() {
-				Function sphereFuncion = psoService.executeFunction(FunctionType.SPHERE);
-				JFreeChartUtil.createChart(FunctionType.SPHERE, sphereFuncion);
+				 List<ChartItem> chartItemGlobal = psoService.executeFunctionByTopology(FunctionType.SPHERE, TopologyType.GLOBAL);
+				 List<ChartItem> chartItemLocal = psoService.executeFunctionByTopology(FunctionType.SPHERE, TopologyType.LOCAL);
+				 List<ChartItem> chartItemFocal = psoService.executeFunctionByTopology(FunctionType.SPHERE, TopologyType.FOCAL);
+				 Function function = new Function(chartItemGlobal, chartItemLocal, chartItemFocal);
+				 JFreeChartUtil.createChart(FunctionType.SPHERE, function);
 			}
 		};
 
@@ -21,8 +28,11 @@ public class Main {
 
 		Thread threadRastrigin = new Thread() {
 			public void run() {
-				Function rastriginFunction = psoService.executeFunction(FunctionType.RASTRINGIN);
-				JFreeChartUtil.createChart(FunctionType.RASTRINGIN, rastriginFunction);
+				 List<ChartItem> chartItemGlobal = psoService.executeFunctionByTopology(FunctionType.RASTRINGIN, TopologyType.GLOBAL);
+				 List<ChartItem> chartItemLocal = psoService.executeFunctionByTopology(FunctionType.RASTRINGIN, TopologyType.LOCAL);
+				 List<ChartItem> chartItemFocal = psoService.executeFunctionByTopology(FunctionType.RASTRINGIN, TopologyType.FOCAL);
+				 Function function = new Function(chartItemGlobal, chartItemLocal, chartItemFocal);
+				 JFreeChartUtil.createChart(FunctionType.RASTRINGIN, function);
 			}
 		};
 
@@ -30,8 +40,11 @@ public class Main {
 
 		Thread threadRosenbrock = new Thread() {
 			public void run() {
-				Function rosenbrockFunction = psoService.executeFunction(FunctionType.ROSENBROCK);
-				JFreeChartUtil.createChart(FunctionType.ROSENBROCK, rosenbrockFunction);
+				 List<ChartItem> chartItemGlobal = psoService.executeFunctionByTopology(FunctionType.ROSENBROCK, TopologyType.GLOBAL);
+				 List<ChartItem> chartItemLocal = psoService.executeFunctionByTopology(FunctionType.ROSENBROCK, TopologyType.LOCAL);
+				 List<ChartItem> chartItemFocal = psoService.executeFunctionByTopology(FunctionType.ROSENBROCK, TopologyType.FOCAL);
+				 Function function = new Function(chartItemGlobal, chartItemLocal, chartItemFocal);
+				 JFreeChartUtil.createChart(FunctionType.ROSENBROCK, function);
 			}
 		};
 
