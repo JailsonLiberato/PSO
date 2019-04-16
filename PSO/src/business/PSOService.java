@@ -19,6 +19,7 @@ public class PSOService {
 
 	private List<Particle> particles;
 	private FunctionType functionType;
+	private TopologyType topologyType;
 	private List<Double> gBest;
 
 	public PSOService() {
@@ -28,6 +29,7 @@ public class PSOService {
 
 	public List<ChartItem> executeFunctionByTopology(FunctionType functionType, TopologyType topologyType) {
 		this.functionType = functionType;
+		this.topologyType = topologyType;
 		initializeParticles(particles);
 		int countIterations = 0;
 		gBest.clear();
@@ -39,15 +41,15 @@ public class PSOService {
 		}
 		do {
 
-			executePSO(topologyType, functionType);
+			executePSO();
 			double media = mediaGBest(gBest);
-			chartItem = createChartItem(media, countIterations, topologyType);
+			chartItem = createChartItem(media, countIterations);
 			chartItems.add(chartItem);
 		} while (countIterations < NUMBER_MAX_ITERATIONS);
 		return chartItems;
 	}
 
-	private ChartItem createChartItem(double media, int countIterations, TopologyType topologyType) {
+	private ChartItem createChartItem(double media, int countIterations) {
 		ChartItem chartItem = new ChartItem();
 		chartItem.setIteration(countIterations);
 		chartItem.setTopologyType(topologyType);
@@ -64,16 +66,16 @@ public class PSOService {
 		return media;
 	}
 
-	private void executePSO(TopologyType topologyType, FunctionType functionType) {
-		calculateFitness(topologyType, functionType);
+	private void executePSO() {
+		calculateFitness();
 		if (TopologyType.FOCAL != topologyType) {
-			updateGlobalBest(topologyType, functionType);
+			updateGlobalBest();
 		}
-		calculateVelocity(topologyType);
-		updatePosition(topologyType);
+		calculateVelocity();
+		updatePosition();
 	}
 
-	private void calculateVelocity(TopologyType topologyType) {
+	private void calculateVelocity() {
 		if (TopologyType.GLOBAL == topologyType || TopologyType.FOCAL == topologyType) {
 			for (Particle particle : particles) {
 				particle.getVelocity().clear();
@@ -100,7 +102,7 @@ public class PSOService {
 
 	}
 
-	private void updatePosition(TopologyType topologyType) {
+	private void updatePosition() {
 		for (Particle particle : particles) {
 			particle.getPosition().clear();
 			for (int i = 0; i < NUMBER_DIMENSIONS; i++) {
@@ -110,10 +112,10 @@ public class PSOService {
 
 	}
 
-	private void updateGlobalBest(TopologyType topologyType, FunctionType functionType) {
+	private void updateGlobalBest() {
 		if (TopologyType.GLOBAL == topologyType) {
 			for (Particle particle : particles) {
-				if (executeFunction(functionType, particle.getPbest(), gBest)) {
+				if (executeFunction(particle.getPbest(), gBest)) {
 					gBest = particle.getPbest();
 				}
 			}
@@ -136,17 +138,17 @@ public class PSOService {
 					nextParticle = particles.get(i + 1);
 				}
 
-				if (executeFunction(functionType, beforeParticle.getPbest(), currentParticle.getPbest())) {
+				if (executeFunction(beforeParticle.getPbest(), currentParticle.getPbest()) && !isSizeExceeded(beforeParticle.getPbest())) {
 					beforeParticle.setGbest(beforeParticle.getPbest());
 					currentParticle.setGbest(beforeParticle.getPbest());
 					nextParticle.setGbest(beforeParticle.getPbest());
 				}
-				if (executeFunction(functionType, currentParticle.getPbest(), nextParticle.getPbest())) {
+				if (executeFunction(currentParticle.getPbest(), nextParticle.getPbest()) && !isSizeExceeded(currentParticle.getPbest())) {
 					beforeParticle.setGbest(currentParticle.getPbest());
 					currentParticle.setGbest(currentParticle.getPbest());
 					nextParticle.setGbest(currentParticle.getPbest());
 				}
-				if (executeFunction(functionType, nextParticle.getPbest(), beforeParticle.getPbest())) {
+				if (executeFunction(nextParticle.getPbest(), beforeParticle.getPbest()) && !isSizeExceeded(nextParticle.getPbest())) {
 					beforeParticle.setGbest(nextParticle.getPbest());
 					currentParticle.setGbest(nextParticle.getPbest());
 					nextParticle.setGbest(nextParticle.getPbest());
@@ -156,16 +158,26 @@ public class PSOService {
 		}
 	}
 
-	private void calculateFitness(TopologyType topologyType, FunctionType functionType) {
+	private boolean isSizeExceeded(List<Double> positions) {
+		for (Double position : positions) {
+			if (functionType.getBound() < Math.abs(position)) {
+				return true;
+			}
+		}
+		return false;
+
+	}
+
+	private void calculateFitness() {
 		for (Particle particle : particles) {
-			if (executeFunction(functionType, particle.getPosition(), particle.getPbest())) {
+			if (executeFunction(particle.getPosition(), particle.getPbest())) {
 				particle.setPbest(particle.getPosition());
 			}
 		}
 
 	}
 
-	private boolean executeFunction(FunctionType functionType, List<Double> positions, List<Double> bestPositions) {
+	private boolean executeFunction(List<Double> positions, List<Double> bestPositions) {
 		if (FunctionType.SPHERE == functionType) {
 			if (FunctionsUtil.sphereFunction(positions) < FunctionsUtil.sphereFunction(bestPositions)) {
 				return true;
@@ -235,6 +247,14 @@ public class PSOService {
 
 	public void setgBest(List<Double> gBest) {
 		this.gBest = gBest;
+	}
+
+	public TopologyType getTopologyType() {
+		return topologyType;
+	}
+
+	public void setTopologyType(TopologyType topologyType) {
+		this.topologyType = topologyType;
 	}
 
 }
