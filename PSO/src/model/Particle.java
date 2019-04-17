@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Particle {
 
+	private Integer id;
 	private List<Double> position;
 	private List<Double> velocity;
 	private List<Double> pbest;
@@ -46,6 +47,25 @@ public class Particle {
 
 	public void setGbest(List<Double> gbest) {
 		this.gbest = gbest;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || !(obj instanceof Particle)) {
+			return false;
+		} else {
+			Particle particle = (Particle) obj;
+			return this.id.equals(particle.id);
+		}
+
 	}
 
 }
