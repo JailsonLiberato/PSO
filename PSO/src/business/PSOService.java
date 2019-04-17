@@ -27,32 +27,39 @@ public class PSOService {
 		gBest = new ArrayList<>();
 	}
 
-	public synchronized List<ChartItem> executeFunctionByTopology(FunctionType functionType, TopologyType topologyType) {
+	public synchronized List<ChartItem> executeFunctionByTopology(FunctionType functionType,
+			TopologyType topologyType) {
 		this.functionType = functionType;
 		this.topologyType = topologyType;
 		particles.clear();
 		initializeParticles(particles);
 		int countIterations = 0;
 		gBest.clear();
-		List<ChartItem> chartItems = new ArrayList<>();
+		List<ChartItem> chartItems = new ArrayList<ChartItem>();
 		ChartItem chartItem = null;
 		if (TopologyType.FOCAL == topologyType) {
 			Random rand = new Random();
 			gBest = particles.get(rand.nextInt(30)).getPbest();
 		}
 		do {
-			try {
-				System.out.println(countIterations);
-				executePSO();
-				double valueFunction = FunctionsUtil.executeFunction(functionType,gBest);
-				chartItem = createChartItem(valueFunction, countIterations);
-				chartItems.add(chartItem);
-				countIterations++;
-			} catch (Exception ex) {
-				System.err.println(ex.getMessage());
+			System.out.println(countIterations);
+			executePSO();
+			double valueFunction = 0.0;
+			if(TopologyType.LOCAL == topologyType) {
+				gBest = particles.get(0).getGbest();
+				for (Particle particle : particles) {
+					if(executeFunction(particle.getGbest(), gBest)) {
+						gBest = particle.getGbest();
+					}
+				}
 			}
+			valueFunction = FunctionsUtil.executeFunction(functionType, gBest);
+			chartItem = createChartItem(valueFunction, countIterations);
+			chartItems.add(chartItem);
+			countIterations++;
 		} while (countIterations < NUMBER_MAX_ITERATIONS);
 		return chartItems;
+
 	}
 
 	private ChartItem createChartItem(double media, int countIterations) {
@@ -78,53 +85,28 @@ public class PSOService {
 			if (TopologyType.GLOBAL == topologyType || TopologyType.FOCAL == topologyType) {
 				for (int j = 0; j < particles.size(); j++) {
 					for (int i = 0; i < NUMBER_DIMENSIONS; i++) {
-						if (particles.get(j).getVelocity().size() != NUMBER_DIMENSIONS) {
-							particles.get(j).getVelocity()
-									.add(INERTIA
-											+ COEFFICIENT1 * (Math.random() * 1)
-													* (particles.get(j).getPbest().get(i)
-															- particles.get(j).getPosition().get(i))
-											+ COEFFICIENT2 * (Math.random() * 1)
-													* (gBest.get(i) - particles.get(j).getPosition().get(i)));
-						} else {
-							particles.get(j).getVelocity()
-									.set(i, INERTIA
-											+ COEFFICIENT1 * (Math.random() * 1)
-													* (particles.get(j).getPbest().get(i)
-															- particles.get(j).getPosition().get(i))
-											+ COEFFICIENT2 * (Math.random() * 1)
-													* (gBest.get(i) - particles.get(j).getPosition().get(i)));
-						}
 
+						particles.get(j).getVelocity().set(i,
+								INERTIA * COEFFICIENT1 * (Math.random() * 1)
+										* (particles.get(j).getPbest().get(i) - particles.get(j).getPosition().get(i))
+										+ COEFFICIENT2 * (Math.random() * 1)
+												* (gBest.get(i) - particles.get(j).getPosition().get(i)));
 					}
 				}
 			} else {
 				for (int j = 0; j < particles.size(); j++) {
 					for (int i = 0; i < NUMBER_DIMENSIONS; i++) {
-						if (particles.get(j).getVelocity().size() != NUMBER_DIMENSIONS) {
-							particles.get(j).getVelocity()
-									.add(INERTIA
-											+ COEFFICIENT1 * (Math.random() * 1)
-													* (particles.get(j).getPbest().get(i)
-															- particles.get(j).getPosition().get(i))
-											+ COEFFICIENT2 * (Math.random() * 1) * (particles.get(j).getGbest().get(i)
-													- particles.get(j).getPosition().get(i)));
-						} else {
-							particles.get(j).getVelocity()
-									.set(i, INERTIA
-											+ COEFFICIENT1 * (Math.random() * 1)
-													* (particles.get(j).getPbest().get(i)
-															- particles.get(j).getPosition().get(i))
-											+ COEFFICIENT2 * (Math.random() * 1) * (particles.get(j).getGbest().get(i)
-													- particles.get(j).getPosition().get(i)));
-						}
+						particles.get(j).getVelocity().set(i, INERTIA * COEFFICIENT1 * (Math.random() * 1)
+								* (particles.get(j).getPbest().get(i) - particles.get(j).getPosition().get(i))
+								+ COEFFICIENT2 * (Math.random() * 1)
+										* (particles.get(j).getGbest().get(i) - particles.get(j).getPosition().get(i)));
 					}
 				}
 			}
 		}
 	}
 
-	private  synchronized void updatePosition() {
+	private synchronized void updatePosition() {
 		for (int j = 0; j < particles.size(); j++) {
 			for (int i = 0; i < NUMBER_DIMENSIONS; i++) {
 				particles.get(j).getPosition().set(i,
@@ -238,6 +220,7 @@ public class PSOService {
 			Double pBest = position.doubleValue();
 			particle.getPosition().add(position);
 			particle.getPbest().add(pBest);
+			particle.getVelocity().add(0.0);
 		}
 		return particle;
 	}
