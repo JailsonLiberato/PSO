@@ -63,15 +63,6 @@ public class PSOService {
 		return chartItem;
 	}
 
-	private double mediaGBest(List<Double> gBest) {
-		double sum = 0.0;
-		for (Double g : gBest) {
-			sum += sum + g;
-		}
-		double media = sum / (double) NUMBER_DIMENSIONS;
-		return media;
-	}
-
 	private void executePSO() {
 		calculateFitness();
 		if (TopologyType.FOCAL != topologyType) {
@@ -244,7 +235,7 @@ public class PSOService {
 	private Particle createDimensions(Particle particle) {
 		for (int i = 0; i < NUMBER_DIMENSIONS; i++) {
 			Double position = generateRandomPosition();
-			Double pBest = new Double(position);
+			Double pBest = position.doubleValue();
 			particle.getPosition().add(position);
 			particle.getPbest().add(pBest);
 		}
