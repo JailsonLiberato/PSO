@@ -1,9 +1,6 @@
 package ui;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.jfree.ui.RefineryUtilities;
 
 import business.FunctionType;
 import business.PSOService;

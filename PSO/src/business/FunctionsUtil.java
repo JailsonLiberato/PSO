@@ -4,14 +4,25 @@ import java.util.List;
 
 public class FunctionsUtil {
 
+	public static Double executeFunction(FunctionType functionType, List<Double> positions) {
+		if (FunctionType.SPHERE == functionType) {
+			return sphereFunction(positions);
+		} else if (FunctionType.RASTRINGIN == functionType) {
+			return rastringinFunction(positions);
+		} else if (FunctionType.ROSENBROCK == functionType) {
+			return rosenbrockFunction(positions);
+		}
+		return null;
+	}
+
 	public static Double sphereFunction(List<Double> positions) {
 		Double fitness = 0.0;
-		
+
 		for (Double position : positions) {
 			fitness += Math.pow(position, 2);
 		}
 		return fitness;
-		
+
 	}
 
 	/*

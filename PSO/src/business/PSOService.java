@@ -27,7 +27,7 @@ public class PSOService {
 		gBest = new ArrayList<>();
 	}
 
-	public  List<ChartItem> executeFunctionByTopology(FunctionType functionType, TopologyType topologyType) {
+	public synchronized List<ChartItem> executeFunctionByTopology(FunctionType functionType, TopologyType topologyType) {
 		this.functionType = functionType;
 		this.topologyType = topologyType;
 		particles.clear();
@@ -44,8 +44,8 @@ public class PSOService {
 			try {
 				System.out.println(countIterations);
 				executePSO();
-				double media = mediaGBest(gBest);
-				chartItem = createChartItem(media, countIterations);
+				double valueFunction = FunctionsUtil.executeFunction(functionType,gBest);
+				chartItem = createChartItem(valueFunction, countIterations);
 				chartItems.add(chartItem);
 				countIterations++;
 			} catch (Exception ex) {
