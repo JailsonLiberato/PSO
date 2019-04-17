@@ -3,13 +3,14 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Particle {
+public class Particle implements Comparable<Particle> {
 
 	private Integer id;
 	private List<Double> position;
 	private List<Double> velocity;
 	private List<Double> pbest;
 	private List<Double> gbest;
+	private Double fitness;
 
 	public Particle() {
 		position = new ArrayList<>();
@@ -57,6 +58,14 @@ public class Particle {
 		this.id = id;
 	}
 
+	public Double getFitness() {
+		return fitness;
+	}
+
+	public void setFitness(Double fitness) {
+		this.fitness = fitness;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null || !(obj instanceof Particle)) {
@@ -66,6 +75,17 @@ public class Particle {
 			return this.id.equals(particle.id);
 		}
 
+	}
+
+	@Override
+	public int compareTo(Particle o) {
+		if (this.fitness < o.fitness) {
+			return -1;
+		}
+		if (this.fitness > o.fitness) {
+			return 1;
+		}
+		return 0;
 	}
 
 }

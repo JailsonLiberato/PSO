@@ -1,6 +1,8 @@
 package business;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -161,24 +163,16 @@ public class PSOService {
 					nextParticle = particles.get(i + 1);
 				}
 
-				if (executeFunction(beforeParticle.getPbest(), currentParticle.getPbest())
-						&& !isSizeExceeded(beforeParticle.getPbest())) {
-					beforeParticle.setGbest(beforeParticle.getPbest());
-					currentParticle.setGbest(beforeParticle.getPbest());
-					nextParticle.setGbest(beforeParticle.getPbest());
-				}
-				else if (executeFunction(currentParticle.getPbest(), nextParticle.getPbest())
-						&& !isSizeExceeded(currentParticle.getPbest())) {
-					beforeParticle.setGbest(currentParticle.getPbest());
-					currentParticle.setGbest(currentParticle.getPbest());
-					nextParticle.setGbest(currentParticle.getPbest());
-				}
-				else if (executeFunction(nextParticle.getPbest(), beforeParticle.getPbest())
-						&& !isSizeExceeded(nextParticle.getPbest())) {
-					beforeParticle.setGbest(nextParticle.getPbest());
-					currentParticle.setGbest(nextParticle.getPbest());
-					nextParticle.setGbest(nextParticle.getPbest());
-				}
+				beforeParticle.setFitness(FunctionsUtil.executeFunction(functionType, beforeParticle.getPbest()));
+				currentParticle.setFitness(FunctionsUtil.executeFunction(functionType, currentParticle.getPbest()));
+				nextParticle.setFitness(FunctionsUtil.executeFunction(functionType, nextParticle.getPbest()));
+				
+				List<Particle> localList = Arrays.asList(beforeParticle, currentParticle, nextParticle);
+				Collections.sort(localList);
+				beforeParticle.setGbest(localList.get(0).getPbest());
+				currentParticle.setGbest(localList.get(0).getPbest());
+				nextParticle.setGbest(localList.get(0).getPbest());
+				 
 
 			}
 		}
