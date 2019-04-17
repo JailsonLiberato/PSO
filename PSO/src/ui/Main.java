@@ -1,6 +1,9 @@
 package ui;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.jfree.ui.RefineryUtilities;
 
 import business.FunctionType;
 import business.PSOService;
@@ -13,24 +16,6 @@ public class Main {
 	public static void main(String[] args) {
 
 		PSOService psoService = new PSOService();
-
-//		 List<ChartItem> chartItemGlobal = psoService.executeFunctionByTopology(FunctionType.SPHERE, TopologyType.GLOBAL);
-//		 List<ChartItem> chartItemLocal = psoService.executeFunctionByTopology(FunctionType.SPHERE, TopologyType.LOCAL);
-//		 List<ChartItem> chartItemFocal = psoService.executeFunctionByTopology(FunctionType.SPHERE, TopologyType.FOCAL);
-//		 Function function = new Function(chartItemGlobal, chartItemLocal, chartItemFocal);
-//		 JFreeChartUtil.createChart(FunctionType.SPHERE, function);
-//		 
-//		 chartItemGlobal = psoService.executeFunctionByTopology(FunctionType.RASTRINGIN, TopologyType.GLOBAL);
-//		 chartItemLocal = psoService.executeFunctionByTopology(FunctionType.RASTRINGIN, TopologyType.LOCAL);
-//		 chartItemFocal = psoService.executeFunctionByTopology(FunctionType.RASTRINGIN, TopologyType.FOCAL);
-//		 function = new Function(chartItemGlobal, chartItemLocal, chartItemFocal);
-//		 JFreeChartUtil.createChart(FunctionType.RASTRINGIN, function);
-//		 
-//		chartItemGlobal = psoService.executeFunctionByTopology(FunctionType.ROSENBROCK, TopologyType.GLOBAL);
-//		chartItemLocal = psoService.executeFunctionByTopology(FunctionType.ROSENBROCK, TopologyType.LOCAL);
-//		chartItemFocal = psoService.executeFunctionByTopology(FunctionType.ROSENBROCK, TopologyType.FOCAL);
-//		function = new Function(chartItemGlobal, chartItemLocal, chartItemFocal);
-//		JFreeChartUtil.createChart(FunctionType.ROSENBROCK, function);
 
 		Thread threadSphere = new Thread() {
 			public void run() {
@@ -76,6 +61,15 @@ public class Main {
 		};
 
 		threadRosenbrock.start();
+		
+//		List<Double> values = new ArrayList<>();
+//		values.add(1.0);
+//		values.add(1.2);
+//		values.add(1.3);
+//		 final BoxplotUtil demo = new BoxplotUtil("Sphere", values);
+//		  demo.pack();
+//		  RefineryUtilities.centerFrameOnScreen(demo);
+//		  demo.setVisible(true);
 
 	}
 }

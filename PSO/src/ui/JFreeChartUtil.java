@@ -44,8 +44,8 @@ public class JFreeChartUtil {
 
 			}
 
-			JFreeChart lineChartObject = ChartFactory.createLineChart(functionType.getName(), NUMBER_OF_ITERATIONS, FITNESS,
-					line_chart_dataset, PlotOrientation.VERTICAL, true, true, false);
+			JFreeChart lineChartObject = ChartFactory.createLineChart(functionType.getName(), NUMBER_OF_ITERATIONS,
+					FITNESS, line_chart_dataset, PlotOrientation.VERTICAL, true, true, false);
 			File lineChart = new File(FILE_PATH + functionType.getName() + FILE_EXTENSION);
 			ChartUtilities.saveChartAsJPEG(lineChart, lineChartObject, WIDTH_GRAPH, HEIGHT_GRAPH);
 		} catch (IOException e) {
