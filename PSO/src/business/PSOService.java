@@ -34,35 +34,36 @@ public class PSOService {
 			TopologyType topologyType) {
 		this.functionType = functionType;
 		this.topologyType = topologyType;
-		particles.clear();
-		initializeParticles(particles);
 		int countIterations = 0;
-		gBest.clear();
 		List<ChartItem> chartItems = new ArrayList<ChartItem>();
-		ChartItem chartItem = null;
-		if (TopologyType.FOCAL == topologyType) {
-			Random rand = new Random();
-			selectedParticle = particles.get(rand.nextInt(30));
-		}
+		initializeParticles(particles);
+
 		do {
 			System.out.println(countIterations);
 			executePSO();
-			double valueFunction = 0.0;
-			if (TopologyType.LOCAL == topologyType) {
-				gBest = particles.get(0).getGbest();
-				for (Particle particle : particles) {
-					if (executeFunction(particle.getGbest(), gBest)) {
-						gBest = particle.getGbest();
-					}
-				}
-			}
-			valueFunction = FunctionsUtil.executeFunction(functionType, gBest);
-			chartItem = createChartItem(valueFunction, countIterations);
-			chartItems.add(chartItem);
+			generateChartItems(functionType, countIterations, chartItems);
 			countIterations++;
-		} while (countIterations < NUMBER_MAX_ITERATIONS);
+		} while (countIterations <= NUMBER_MAX_ITERATIONS);
 		return chartItems;
 
+	}
+
+	private void generateChartItems(FunctionType functionType, int countIterations, List<ChartItem> chartItems) {
+		ChartItem chartItem;
+		double valueFunction = 0.0;
+		if (TopologyType.LOCAL == this.topologyType) {
+			gBest = particles.get(0).getGbest();
+			for (Particle particle : particles) {
+				if (executeFunction(particle.getGbest(), gBest)) {
+					gBest = particle.getGbest();
+				}
+			}
+		}
+		valueFunction = FunctionsUtil.executeFunction(functionType, gBest);
+		if (countIterations % 1000 == 0) {
+			chartItem = createChartItem(valueFunction, countIterations);
+			chartItems.add(chartItem);
+		}
 	}
 
 	private ChartItem createChartItem(double media, int countIterations) {
@@ -134,13 +135,17 @@ public class PSOService {
 
 	}
 
+	/**
+	 * Atualiza de acordo com a topologia e o valor da execução das funções.
+	 */
 	private synchronized void updateGlobalBest() {
 		if (TopologyType.GLOBAL == topologyType || TopologyType.FOCAL == topologyType) {
 			if (gBest.isEmpty()) {
 				gBest = particles.get(0).getPbest();
 			}
 			for (int i = 0; i < particles.size(); i++) {
-				if (executeFunction(particles.get(i).getPbest(), gBest)) {
+				if (executeFunction(particles.get(i).getPbest(), gBest)
+						&& !isSizeExceeded(particles.get(i).getPbest())) {
 					gBest = particles.get(i).getPbest();
 				}
 			}
@@ -166,13 +171,14 @@ public class PSOService {
 				beforeParticle.setFitness(FunctionsUtil.executeFunction(functionType, beforeParticle.getPbest()));
 				currentParticle.setFitness(FunctionsUtil.executeFunction(functionType, currentParticle.getPbest()));
 				nextParticle.setFitness(FunctionsUtil.executeFunction(functionType, nextParticle.getPbest()));
-				
+
 				List<Particle> localList = Arrays.asList(beforeParticle, currentParticle, nextParticle);
 				Collections.sort(localList);
-				beforeParticle.setGbest(localList.get(0).getPbest());
-				currentParticle.setGbest(localList.get(0).getPbest());
-				nextParticle.setGbest(localList.get(0).getPbest());
-				 
+				if (!isSizeExceeded(localList.get(0).getPbest())) {
+					beforeParticle.setGbest(localList.get(0).getPbest());
+					currentParticle.setGbest(localList.get(0).getPbest());
+					nextParticle.setGbest(localList.get(0).getPbest());
+				}
 
 			}
 		}
@@ -188,9 +194,14 @@ public class PSOService {
 
 	}
 
+	/**
+	 * Se a posição for melhor, atualiza o Pbest. Para cada partícula
+	 * individualmente.
+	 */
 	private synchronized void calculateFitness() {
 		for (int i = 0; i < particles.size(); i++) {
-			if (executeFunction(particles.get(i).getPosition(), particles.get(i).getPbest())) {
+			if (executeFunction(particles.get(i).getPosition(), particles.get(i).getPbest())
+					&& !isSizeExceeded(particles.get(i).getPosition())) {
 				particles.get(i).setPbest(particles.get(i).getPosition());
 			}
 		}
@@ -215,7 +226,14 @@ public class PSOService {
 	}
 
 	private void initializeParticles(List<Particle> particles) {
+		particles.clear();
+		gBest.clear();
 		createParticles(particles);
+
+		if (TopologyType.FOCAL == topologyType) {
+			Random rand = new Random();
+			selectedParticle = particles.get(rand.nextInt(30));
+		}
 	}
 
 	private Particle createParticle(int id) {
@@ -232,6 +250,7 @@ public class PSOService {
 			particle.getPosition().add(position);
 			particle.getPbest().add(pBest);
 			particle.getVelocity().add(0.0);
+			particle.setFitness(FunctionsUtil.executeFunction(functionType, particle.getPosition()));
 		}
 		return particle;
 	}
@@ -245,6 +264,8 @@ public class PSOService {
 		for (int i = 0; i < NUMBER_PARTICLES; i++) {
 			particles.add(createParticle(i + 1));
 		}
+
+		Collections.sort(particles);
 	}
 
 	public FunctionType getFunctionType() {
