@@ -55,9 +55,9 @@ public class JFreeChartUtil {
 			JFreeChart lineChartObject = ChartFactory.createLineChart(functionType.getName(), NUMBER_OF_ITERATIONS,
 					FITNESS, line_chart_dataset, PlotOrientation.VERTICAL, true, true, false);
 			
-			//final CategoryPlot plot = lineChartObject.getCategoryPlot();
-	        //final NumberAxis rangeAxis = new LogarithmicAxis("Log(y)");
-	        //plot.setRangeAxis(rangeAxis);
+			final CategoryPlot plot = lineChartObject.getCategoryPlot();
+	        final NumberAxis rangeAxis = new LogarithmicAxis("Log(y)");
+	        plot.setRangeAxis(rangeAxis);
 			
 			
 			File lineChart = new File(FILE_PATH + functionType.getName() + FILE_EXTENSION);
