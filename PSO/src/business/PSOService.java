@@ -60,10 +60,9 @@ public class PSOService {
 			}
 		}
 		valueFunction = FunctionsUtil.executeFunction(functionType, gBest);
-		if (countIterations % 1000 == 0) {
+		
 			chartItem = createChartItem(valueFunction, countIterations);
 			chartItems.add(chartItem);
-		}
 	}
 
 	private ChartItem createChartItem(double media, int countIterations) {

@@ -24,6 +24,8 @@ public class Main {
 						TopologyType.FOCAL);
 				Function function = new Function(chartItemGlobal, chartItemLocal, chartItemFocal);
 				JFreeChartUtil.createChart(FunctionType.SPHERE, function);
+				
+				final BoxplotUtil demo = new BoxplotUtil(FunctionType.SPHERE, function);
 			}
 		};
 
@@ -59,14 +61,8 @@ public class Main {
 
 		threadRosenbrock.start();
 		
-//		List<Double> values = new ArrayList<>();
-//		values.add(1.0);
-//		values.add(1.2);
-//		values.add(1.3);
-//		 final BoxplotUtil demo = new BoxplotUtil("Sphere", values);
-//		  demo.pack();
-//		  RefineryUtilities.centerFrameOnScreen(demo);
-//		  demo.setVisible(true);
+
+		 
 
 	}
 }

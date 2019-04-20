@@ -21,6 +21,14 @@ public class Function {
 		this.focals = focals;
 	}
 
+	public static List<Double> chartItemToValues(List<ChartItem> items) {
+		List<Double> list = new ArrayList<>();
+		for (ChartItem item : items) {
+			list.add(item.getValue());
+		}
+		return list;
+	}
+
 	public List<ChartItem> getLocals() {
 		return locals;
 	}
