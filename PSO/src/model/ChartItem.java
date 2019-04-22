@@ -3,10 +3,12 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import business.topology.Topology;
+
 public class ChartItem {
 
 	private Double value;
-	private TopologyType topologyType;
+	private Topology topology;
 	private Integer iteration;
 
 	public static List<ChartItem> getValuesToGraphLines(List<ChartItem> items) {
@@ -28,12 +30,12 @@ public class ChartItem {
 		this.value = value;
 	}
 
-	public TopologyType getTopologyType() {
-		return topologyType;
+	public Topology getTopology() {
+		return topology;
 	}
 
-	public void setTopologyType(TopologyType topologyType) {
-		this.topologyType = topologyType;
+	public void setTopology(Topology topology) {
+		this.topology = topology;
 	}
 
 	public Integer getIteration() {

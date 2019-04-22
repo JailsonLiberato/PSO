@@ -2,11 +2,11 @@ package ui;
 
 import java.util.List;
 
-import business.FunctionType;
 import business.PSOService;
-import model.ChartItem;
-import model.Function;
-import model.TopologyType;
+import business.function.SphereFunction;
+import business.topology.FocalTopology;
+import business.topology.GlobalTopology;
+import business.topology.LocalTopology;
 
 public class Main {
 
@@ -16,50 +16,50 @@ public class Main {
 
 		Thread threadSphere = new Thread() {
 			public void run() {
-				List<ChartItem> chartItemGlobal = psoService.executeFunctionByTopology(FunctionType.SPHERE,
-						TopologyType.GLOBAL);
-				List<ChartItem> chartItemLocal = psoService.executeFunctionByTopology(FunctionType.SPHERE,
-						TopologyType.LOCAL);
-				List<ChartItem> chartItemFocal = psoService.executeFunctionByTopology(FunctionType.SPHERE,
-						TopologyType.FOCAL);
-				Function function = new Function(chartItemGlobal, chartItemLocal, chartItemFocal);
-				JFreeChartUtil.createChart(FunctionType.SPHERE, function);
+				SphereFunction sphereFunction = new SphereFunction();
 				
-				final BoxplotUtil demo = new BoxplotUtil(FunctionType.SPHERE, function);
+				GlobalTopology globalTopology = new GlobalTopology();
+				List<Double> values = psoService.executePSO(sphereFunction, globalTopology);
+
+				LocalTopology localTopology = new LocalTopology();
+				values = psoService.executePSO(sphereFunction, localTopology);
+				
+				FocalTopology focalTopology = new FocalTopology();
+				values = psoService.executePSO(sphereFunction, focalTopology);
 			}
 		};
 
 		threadSphere.start();
 
-		Thread threadRastrigin = new Thread() {
-			public void run() {
-				List<ChartItem> chartItemGlobal = psoService.executeFunctionByTopology(FunctionType.RASTRINGIN,
-						TopologyType.GLOBAL);
-				List<ChartItem> chartItemLocal = psoService.executeFunctionByTopology(FunctionType.RASTRINGIN,
-						TopologyType.LOCAL);
-				List<ChartItem> chartItemFocal = psoService.executeFunctionByTopology(FunctionType.RASTRINGIN,
-						TopologyType.FOCAL);
-				Function function = new Function(chartItemGlobal, chartItemLocal, chartItemFocal);
-				JFreeChartUtil.createChart(FunctionType.RASTRINGIN, function);
-			}
-		};
-
-		threadRastrigin.start();
-
-		Thread threadRosenbrock = new Thread() {
-			public void run() {
-				List<ChartItem> chartItemGlobal = psoService.executeFunctionByTopology(FunctionType.ROSENBROCK,
-						TopologyType.GLOBAL);
-				List<ChartItem> chartItemLocal = psoService.executeFunctionByTopology(FunctionType.ROSENBROCK,
-						TopologyType.LOCAL);
-				List<ChartItem> chartItemFocal = psoService.executeFunctionByTopology(FunctionType.ROSENBROCK,
-						TopologyType.FOCAL);
-				Function function = new Function(chartItemGlobal, chartItemLocal, chartItemFocal);
-				JFreeChartUtil.createChart(FunctionType.ROSENBROCK, function);
-			}
-		};
-
-		threadRosenbrock.start();
+		/*
+		 * Thread threadRastrigin = new Thread() { public void run() {
+		 * RastringinFunction rastringinFunction = new RastringinFunction();
+		 * 
+		 * GlobalTopology globalTopology = new GlobalTopology(); List<Double> values
+		 * =psoService.executePSO(rastringinFunction, globalTopology);
+		 * 
+		 * LocalTopology localTopology = new LocalTopology(); values =
+		 * psoService.executePSO(rastringinFunction, localTopology);
+		 * 
+		 * FocalTopology focalTopology = new FocalTopology(); values =
+		 * psoService.executePSO(rastringinFunction, focalTopology); } };
+		 * 
+		 * threadRastrigin.start();
+		 * 
+		 * Thread threadRosenbrock = new Thread() { public void run() {
+		 * RosenbrockFunction rosenbrockFunction = new RosenbrockFunction();
+		 * 
+		 * GlobalTopology globalTopology = new GlobalTopology(); List<Double> values =
+		 * psoService.executePSO(rosenbrockFunction, globalTopology);
+		 * 
+		 * LocalTopology localTopology = new LocalTopology(); values =
+		 * psoService.executePSO(rosenbrockFunction, localTopology);
+		 * 
+		 * FocalTopology focalTopology = new FocalTopology(); values =
+		 * psoService.executePSO(rosenbrockFunction, focalTopology); } };
+		 * 
+		 * threadRosenbrock.start();
+		 */
 		
 
 		 

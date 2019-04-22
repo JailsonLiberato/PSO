@@ -1,23 +1,8 @@
 package ui;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
-
-import business.FunctionType;
-import model.ChartItem;
-import model.Function;
-
 public class JFreeChartUtil {
 
-	private static final String FILE_PATH = "files/";
+	/*private static final String FILE_PATH = "files/";
 	private static final String FILE_EXTENSION = ".jpeg";
 	private static final int HEIGHT_GRAPH = 480;
 	private static final int WIDTH_GRAPH = 640;
@@ -61,6 +46,6 @@ public class JFreeChartUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 }

@@ -1,69 +1,21 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
+import util.Constants;
 
 public class Particle implements Comparable<Particle> {
 
 	private Integer id;
-	private List<Double> position;
-	private List<Double> velocity;
-	private List<Double> pbest;
-	private List<Double> gbest;
-	private Double fitness;
+	private double[] position;
+	private double[] velocity;
+	private double[] pbest;
+	private double[] lbest;
+	private double fitness;
 
 	public Particle() {
-		position = new ArrayList<>();
-		velocity = new ArrayList<>();
-		pbest = new ArrayList<>();
-	}
-
-	public List<Double> getPosition() {
-		return position;
-	}
-
-	public void setPosition(List<Double> position) {
-		this.position = position;
-	}
-
-	public List<Double> getVelocity() {
-		return velocity;
-	}
-
-	public void setVelocity(List<Double> velocity) {
-		this.velocity = velocity;
-	}
-
-	public List<Double> getPbest() {
-		return pbest;
-	}
-
-	public void setPbest(List<Double> pbest) {
-		this.pbest = pbest;
-	}
-
-	public List<Double> getGbest() {
-		return gbest;
-	}
-
-	public void setGbest(List<Double> gbest) {
-		this.gbest = gbest;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Double getFitness() {
-		return fitness;
-	}
-
-	public void setFitness(Double fitness) {
-		this.fitness = fitness;
+		position = new double[Constants.N_DIMENSIONS];
+		velocity = new double[Constants.N_DIMENSIONS];
+		pbest = new double[Constants.N_DIMENSIONS];
+		lbest = new double[Constants.N_DIMENSIONS];
 	}
 
 	@Override
@@ -86,6 +38,54 @@ public class Particle implements Comparable<Particle> {
 			return 1;
 		}
 		return 0;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public double[] getPosition() {
+		return position;
+	}
+
+	public void setPosition(double[] position) {
+		this.position = position;
+	}
+
+	public double[] getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(double[] velocity) {
+		this.velocity = velocity;
+	}
+
+	public double[] getPbest() {
+		return pbest;
+	}
+
+	public void setPbest(double[] pbest) {
+		this.pbest = pbest;
+	}
+
+	public double getFitness() {
+		return fitness;
+	}
+
+	public void setFitness(double fitness) {
+		this.fitness = fitness;
+	}
+
+	public double[] getLbest() {
+		return lbest;
+	}
+
+	public void setLbest(double[] lbest) {
+		this.lbest = lbest;
 	}
 
 }
