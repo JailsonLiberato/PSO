@@ -20,7 +20,7 @@ public class PSOService {
 		gBest = new double[Constants.N_DIMENSIONS];
 	}
 
-	public synchronized List<Double> executePSO(FitnessFunction fitnessFunction, Topology topology) {
+	public synchronized List<Double> executePSO(FitnessFunction fitnessFunction, Topology topology, boolean linearDecayWeight, boolean constrictionCoeffWeight) {
 		this.fitnessFunction = fitnessFunction;
 		int countIterations = 0;
 		particles = particleService.initializeParticles(fitnessFunction);
