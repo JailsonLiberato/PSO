@@ -51,10 +51,6 @@ public class JFreeChartUtil {
 			JFreeChart lineChartObject = ChartFactory.createLineChart(fitnessFunction.toString(), NUMBER_OF_ITERATIONS,
 					FITNESS, line_chart_dataset, PlotOrientation.VERTICAL, true, true, false);
 
-			// final CategoryPlot plot = lineChartObject.getCategoryPlot();
-			// final NumberAxis rangeAxis = new LogarithmicAxis("Log(y)");
-			// plot.setRangeAxis(rangeAxis);
-
 			File lineChart = new File(FILE_PATH + fitnessFunction.toString() + FILE_EXTENSION);
 			ChartUtilities.saveChartAsJPEG(lineChart, lineChartObject, WIDTH_GRAPH, HEIGHT_GRAPH);
 		} catch (IOException e) {
