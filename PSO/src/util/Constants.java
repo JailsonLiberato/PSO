@@ -22,5 +22,18 @@ public class Constants {
 	public static final String FITNESS_CURVE_SPHERE_FUNCTION_CONSTRICTION_COEFF_WEIGHT = "Fitness curve Sphere function (Constriction Coeff. Weight)";
 	public static final String FITNESS_CURVE_RASTRINGIN_FUNCTION_CONSTRICTION_COEFF_WEIGHT = "Fitness curve Rastringin function (Constriction Coeff. Weight)";
 	public static final String FITNESS_CURVE_ROSENBROCK_FUNCTION_CONSTRICTION_COEFF_WEIGHT = "Fitness curve Rosenbrock function (Constriction Coeff. Weight)";
+	
+	public static final String SPHERE_CONSTANT_WEIGHT = "Sphere function (Constant Weitght)";
+	public static final String RASTRINGIN_CONSTANT_WEIGHT = "Rastringin function (Constant Weitght)";
+	public static final String ROSENBROCK_CONSTANT_WEIGHT = "Rosenbrock function (Constant Weitght)";
+	
+	public static final String SPHERE_LINEAR_DECAY_WEIGHT = "Sphere function (Linear Decay Weight)";
+	public static final String RASTRINGIN_LINEAR_DECAY_WEIGHT = "Rastringin function (Linear Decay Weight)";
+	public static final String ROSENBROCK_LINEAR_DECAY_WEIGHT = "Rosenbrock function (Linear Decay Weight)";
+	
+	public static final String SPHERE_FUNCTION_CONSTRICTION_COEFF_WEIGHT = "Sphere function (Constriction Coeff. Weight)";
+	public static final String RASTRINGIN_FUNCTION_CONSTRICTION_COEFF_WEIGHT = "Rastringin function (Constriction Coeff. Weight)";
+	public static final String ROSENBROCK_FUNCTION_CONSTRICTION_COEFF_WEIGHT = "Rosenbrock function (Constriction Coeff. Weight)";
+	
 
 }
