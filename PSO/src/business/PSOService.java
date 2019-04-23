@@ -32,9 +32,9 @@ public class PSOService {
 			updateGBest();
 			updatePosition();
 			countIterations++;
-			if (!fitnessValues.contains(fitnessFunction.executeFunction(gBest))) {
+			/*if (!fitnessValues.contains(fitnessFunction.executeFunction(gBest))) {*/
 				fitnessValues.add(fitnessFunction.executeFunction(gBest));
-			}
+			/* } */
 		} while (countIterations < Constants.N_ITERATIONS);
 		return fitnessValues;
 	}
