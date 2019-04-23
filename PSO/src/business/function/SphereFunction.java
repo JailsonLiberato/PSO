@@ -16,5 +16,10 @@ public class SphereFunction implements FitnessFunction{
 	public double getBound() {
 		return 100.0;
 	}
+	
+	@Override
+	public String toString() {
+		return "Sphere";
+	}
 
 }

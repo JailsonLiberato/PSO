@@ -18,5 +18,10 @@ public class RosenbrockFunction implements FitnessFunction {
 	public double getBound() {
 		return 5.12;
 	}
+	
+	@Override
+	public String toString() {
+		return "Rosenbrock";
+	}
 
 }

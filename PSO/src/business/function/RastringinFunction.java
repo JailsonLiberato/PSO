@@ -17,5 +17,10 @@ public class RastringinFunction implements FitnessFunction {
 	public double getBound() {
 		return 30.0;
 	}
+	
+	@Override
+	public String toString() {
+		return "Rastringin";
+	}
 
 }

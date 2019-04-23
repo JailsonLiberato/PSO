@@ -2,30 +2,39 @@ package ui;
 
 import java.util.List;
 
+import business.ChartItemService;
 import business.PSOService;
 import business.function.SphereFunction;
 import business.topology.FocalTopology;
 import business.topology.GlobalTopology;
 import business.topology.LocalTopology;
+import model.Function;
 
 public class Main {
 
 	public static void main(String[] args) {
 
 		PSOService psoService = new PSOService();
+		ChartItemService chartItemService = new ChartItemService();
 
 		Thread threadSphere = new Thread() {
 			public void run() {
 				SphereFunction sphereFunction = new SphereFunction();
-				
+
 				GlobalTopology globalTopology = new GlobalTopology();
 				List<Double> values = psoService.executePSO(sphereFunction, globalTopology);
+				Function function = new Function();
+				function.setGlobals(chartItemService.convertFitnessArrayToChartItems(globalTopology, values));
 
 				LocalTopology localTopology = new LocalTopology();
 				values = psoService.executePSO(sphereFunction, localTopology);
-				
+				function.setLocals(chartItemService.convertFitnessArrayToChartItems(localTopology, values));
+
 				FocalTopology focalTopology = new FocalTopology();
 				values = psoService.executePSO(sphereFunction, focalTopology);
+				function.setFocals(chartItemService.convertFitnessArrayToChartItems(focalTopology, values));
+
+				JFreeChartUtil.createChart(sphereFunction, function);
 			}
 		};
 
@@ -60,9 +69,6 @@ public class Main {
 		 * 
 		 * threadRosenbrock.start();
 		 */
-		
-
-		 
 
 	}
 }
