@@ -20,7 +20,7 @@ public class PSOService {
 		gBest = new double[Constants.N_DIMENSIONS];
 	}
 
-	public List<Double> executePSO(FitnessFunction fitnessFunction, Topology topology) {
+	public synchronized List<Double> executePSO(FitnessFunction fitnessFunction, Topology topology) {
 		this.fitnessFunction = fitnessFunction;
 		int countIterations = 0;
 		particles = particleService.initializeParticles(fitnessFunction);
@@ -28,12 +28,13 @@ public class PSOService {
 		List<Double> fitnessValues = new ArrayList<>();
 		do {
 			calculateFitness();
-			particles = topology.calculateVelocity(particles, gBest, fitnessFunction);
 			updateGBest();
+			particles = topology.calculateVelocity(particles, gBest, fitnessFunction);
 			updatePosition();
+			updateBoundAdjustment();
 			countIterations++;
-			/*if (!fitnessValues.contains(fitnessFunction.executeFunction(gBest))) {*/
-				fitnessValues.add(fitnessFunction.executeFunction(gBest));
+			/* if (!fitnessValues.contains(fitnessFunction.executeFunction(gBest))) { */
+			fitnessValues.add(fitnessFunction.executeFunction(gBest));
 			/* } */
 		} while (countIterations < Constants.N_ITERATIONS);
 		return fitnessValues;
@@ -51,8 +52,7 @@ public class PSOService {
 		for (int i = 0; i < Constants.N_PARTICLES; i++) {
 			Particle particle = particles.get(i);
 			if (fitnessFunction.executeFunction(particle.getPosition()) < fitnessFunction
-					.executeFunction(particle.getPbest())
-					&& !particleService.isLimitExceed(fitnessFunction, particle.getPosition())) {
+					.executeFunction(particle.getPbest())) {
 				particle.setPbest(particle.getPosition().clone());
 				particle.setFitness(fitnessFunction.executeFunction(particle.getPbest()));
 			}
@@ -65,6 +65,18 @@ public class PSOService {
 			if ((fitnessFunction.executeFunction(particle.getPbest()) < fitnessFunction.executeFunction(gBest))
 					&& !particleService.isLimitExceed(fitnessFunction, particle.getPbest())) {
 				gBest = particle.getPbest();
+			}
+		}
+	}
+	
+	private void updateBoundAdjustment() {
+		for(int i=0; i<Constants.N_PARTICLES; i++) {
+			for(int j=0; j < Constants.N_DIMENSIONS;j++) {
+				if(fitnessFunction.getBound() < particles.get(i).getPosition()[j]) {
+					particles.get(i).getPosition()[j] = fitnessFunction.getBound();
+				}else if(-fitnessFunction.getBound() > particles.get(i).getPosition()[j]) {
+					particles.get(i).getPosition()[j] = -fitnessFunction.getBound(); 
+				}
 			}
 		}
 	}

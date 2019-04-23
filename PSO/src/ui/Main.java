@@ -19,28 +19,28 @@ public class Main {
 		PSOService psoService = new PSOService();
 		ChartItemService chartItemService = new ChartItemService();
 
-//		Thread threadSphere = new Thread() {
-//			public void run() {
-//				SphereFunction sphereFunction = new SphereFunction();
-//
-//				GlobalTopology globalTopology = new GlobalTopology();
-//				List<Double> values = psoService.executePSO(sphereFunction, globalTopology);
-//				Function function = new Function();
-//				function.setGlobals(chartItemService.convertFitnessArrayToChartItems(globalTopology, values));
-//
-//				LocalTopology localTopology = new LocalTopology();
-//				values = psoService.executePSO(sphereFunction, localTopology);
-//				function.setLocals(chartItemService.convertFitnessArrayToChartItems(localTopology, values));
-//
-//				FocalTopology focalTopology = new FocalTopology();
-//				values = psoService.executePSO(sphereFunction, focalTopology);
-//				function.setFocals(chartItemService.convertFitnessArrayToChartItems(focalTopology, values));
-//
-//				JFreeChartUtil.createChart(sphereFunction, function);
-//			}
-//		};
-//
-//		threadSphere.start();
+		Thread threadSphere = new Thread() {
+			public void run() {
+				SphereFunction sphereFunction = new SphereFunction();
+
+				GlobalTopology globalTopology = new GlobalTopology();
+				List<Double> values = psoService.executePSO(sphereFunction, globalTopology);
+				Function function = new Function();
+				function.setGlobals(chartItemService.convertFitnessArrayToChartItems(globalTopology, values));
+
+				LocalTopology localTopology = new LocalTopology();
+				values = psoService.executePSO(sphereFunction, localTopology);
+				function.setLocals(chartItemService.convertFitnessArrayToChartItems(localTopology, values));
+
+				FocalTopology focalTopology = new FocalTopology();
+				values = psoService.executePSO(sphereFunction, focalTopology);
+				function.setFocals(chartItemService.convertFitnessArrayToChartItems(focalTopology, values));
+
+				JFreeChartUtil.createChart(sphereFunction, function);
+			}
+		};
+
+		threadSphere.start();
 
 		Thread threadRastrigin = new Thread() {
 			public void run() {
@@ -65,30 +65,30 @@ public class Main {
 
 		threadRastrigin.start();
 
-//		Thread threadRosenbrock = new Thread() {
-//			public void run() {
-//				RosenbrockFunction rosenbrockFunction = new RosenbrockFunction();
-//
-//				GlobalTopology globalTopology = new GlobalTopology();
-//				List<Double> values = psoService.executePSO(rosenbrockFunction, globalTopology);
-//				Function function = new Function();
-//				function.setGlobals(chartItemService.convertFitnessArrayToChartItems(globalTopology, values));
-//
-//
-//				LocalTopology localTopology = new LocalTopology();
-//				values = psoService.executePSO(rosenbrockFunction, localTopology);
-//				function.setLocals(chartItemService.convertFitnessArrayToChartItems(localTopology, values));
-//
-//				FocalTopology focalTopology = new FocalTopology();
-//				values = psoService.executePSO(rosenbrockFunction, focalTopology);
-//				function.setFocals(chartItemService.convertFitnessArrayToChartItems(focalTopology, values));
-//
-//				JFreeChartUtil.createChart(rosenbrockFunction, function);
-//				
-//			}
-//		};
-//
-//		threadRosenbrock.start();
+		Thread threadRosenbrock = new Thread() {
+			public void run() {
+				RosenbrockFunction rosenbrockFunction = new RosenbrockFunction();
+
+				GlobalTopology globalTopology = new GlobalTopology();
+				List<Double> values = psoService.executePSO(rosenbrockFunction, globalTopology);
+				Function function = new Function();
+				function.setGlobals(chartItemService.convertFitnessArrayToChartItems(globalTopology, values));
+
+
+				LocalTopology localTopology = new LocalTopology();
+				values = psoService.executePSO(rosenbrockFunction, localTopology);
+				function.setLocals(chartItemService.convertFitnessArrayToChartItems(localTopology, values));
+
+				FocalTopology focalTopology = new FocalTopology();
+				values = psoService.executePSO(rosenbrockFunction, focalTopology);
+				function.setFocals(chartItemService.convertFitnessArrayToChartItems(focalTopology, values));
+
+				JFreeChartUtil.createChart(rosenbrockFunction, function);
+				
+			}
+		};
+
+		threadRosenbrock.start();
 
 	}
 }

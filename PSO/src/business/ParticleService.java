@@ -47,4 +47,12 @@ public class ParticleService {
 		return false;
 	}
 
+	public boolean isLimitExceed(FitnessFunction fitnessFunction, double position) {
+		if (fitnessFunction.getBound() < Math.abs(position)) {
+			return true;
+		}
+
+		return false;
+	}
+
 }
