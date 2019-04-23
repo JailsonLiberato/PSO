@@ -7,6 +7,6 @@ import model.Particle;
 
 public interface Topology {
 
-	public List<Particle> calculateVelocity(List<Particle> particles, double[] gBest, FitnessFunction fitnessFunction);
+	public List<Particle> calculateVelocity(List<Particle> particles, double[] gBest, FitnessFunction fitnessFunction, double inertia);
 	public double generateRandomValue();
 }

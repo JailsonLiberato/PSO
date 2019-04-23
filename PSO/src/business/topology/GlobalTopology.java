@@ -10,13 +10,14 @@ import util.Constants;
 public class GlobalTopology implements Topology {
 
 	@Override
-	public List<Particle> calculateVelocity(List<Particle> particles, double[] gBest, FitnessFunction fitnessFunction) {
+	public List<Particle> calculateVelocity(List<Particle> particles, double[] gBest, FitnessFunction fitnessFunction,
+			double inertia) {
 		Random random = new Random();
 		for (int i = 0; i < Constants.N_PARTICLES; i++) {
 			double r1 = random.nextDouble() * 1.0;
 			double r2 = random.nextDouble() * 1.0;
 			for (int j = 0; j < Constants.N_DIMENSIONS; j++) {
-				particles.get(i).getVelocity()[j] = (Constants.INERTIA * particles.get(i).getVelocity()[j])
+				particles.get(i).getVelocity()[j] = (inertia * particles.get(i).getVelocity()[j])
 						+ Constants.COEFFICIENT1 * r1
 								* (particles.get(i).getPbest()[j] - particles.get(i).getPosition()[j])
 						+ Constants.COEFFICIENT2 * r2 * (gBest[j] - particles.get(i).getPosition()[j]);

@@ -20,7 +20,8 @@ public class PSOService {
 		gBest = new double[Constants.N_DIMENSIONS];
 	}
 
-	public synchronized List<Double> executePSO(FitnessFunction fitnessFunction, Topology topology, boolean linearDecayWeight, boolean constrictionCoeffWeight) {
+	public synchronized List<Double> executePSO(FitnessFunction fitnessFunction, Topology topology,
+			boolean linearDecayWeight, boolean constrictionCoeffWeight) {
 		this.fitnessFunction = fitnessFunction;
 		int countIterations = 0;
 		particles = particleService.initializeParticles(fitnessFunction);
@@ -29,15 +30,25 @@ public class PSOService {
 		do {
 			calculateFitness();
 			updateGBest();
-			particles = topology.calculateVelocity(particles, gBest, fitnessFunction);
+			double inertia = generateInertia(linearDecayWeight, constrictionCoeffWeight, countIterations);
+			particles = topology.calculateVelocity(particles, gBest, fitnessFunction, inertia);
 			updatePosition();
 			updateBoundAdjustment();
 			countIterations++;
-			/* if (!fitnessValues.contains(fitnessFunction.executeFunction(gBest))) { */
 			fitnessValues.add(fitnessFunction.executeFunction(gBest));
-			/* } */
 		} while (countIterations < Constants.N_ITERATIONS);
 		return fitnessValues;
+	}
+
+	private double generateInertia(boolean linearDecayWeight, boolean constrictionCoeffWeight, int countIterations) {
+		if (linearDecayWeight) {
+			return (Constants.INERTIA_MAX
+					- countIterations * (Constants.INERTIA_MAX - Constants.INERTIA_MIN) / Constants.N_ITERATIONS);
+		} else if (constrictionCoeffWeight) {
+			double phi = Constants.COEFFICIENT1 +Constants.COEFFICIENT2;
+			return 2 / (Math.abs(2 - phi - Math.pow(((Math.pow(phi, 2) - 4 * phi)), 0.5)));
+		}
+		return Constants.INERTIA;
 	}
 
 	private void updatePosition() {
@@ -68,14 +79,14 @@ public class PSOService {
 			}
 		}
 	}
-	
+
 	private void updateBoundAdjustment() {
-		for(int i=0; i<Constants.N_PARTICLES; i++) {
-			for(int j=0; j < Constants.N_DIMENSIONS;j++) {
-				if(fitnessFunction.getBound() < particles.get(i).getPosition()[j]) {
+		for (int i = 0; i < Constants.N_PARTICLES; i++) {
+			for (int j = 0; j < Constants.N_DIMENSIONS; j++) {
+				if (fitnessFunction.getBound() < particles.get(i).getPosition()[j]) {
 					particles.get(i).getPosition()[j] = fitnessFunction.getBound();
-				}else if(-fitnessFunction.getBound() > particles.get(i).getPosition()[j]) {
-					particles.get(i).getPosition()[j] = -fitnessFunction.getBound(); 
+				} else if (-fitnessFunction.getBound() > particles.get(i).getPosition()[j]) {
+					particles.get(i).getPosition()[j] = -fitnessFunction.getBound();
 				}
 			}
 		}
