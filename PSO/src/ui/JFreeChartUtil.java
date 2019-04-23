@@ -10,7 +10,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import business.function.FitnessFunction;
 import model.ChartItem;
 import model.Function;
 
@@ -23,7 +22,7 @@ public class JFreeChartUtil {
 	private static final String FITNESS = "Fitness";
 	private static final String NUMBER_OF_ITERATIONS = "Number of iterations";
 
-	public static void createChart(FitnessFunction fitnessFunction, Function function) {
+	public static void createChart(String name, Function function) {
 		try {
 			DefaultCategoryDataset line_chart_dataset = new DefaultCategoryDataset();
 			List<ChartItem> globals = function.getGlobals();
@@ -48,10 +47,10 @@ public class JFreeChartUtil {
 
 			}
 
-			JFreeChart lineChartObject = ChartFactory.createLineChart(fitnessFunction.toString(), NUMBER_OF_ITERATIONS,
+			JFreeChart lineChartObject = ChartFactory.createLineChart(name, NUMBER_OF_ITERATIONS,
 					FITNESS, line_chart_dataset, PlotOrientation.VERTICAL, true, true, false);
 
-			File lineChart = new File(FILE_PATH + fitnessFunction.toString() + FILE_EXTENSION);
+			File lineChart = new File(FILE_PATH + name + FILE_EXTENSION);
 			ChartUtilities.saveChartAsJPEG(lineChart, lineChartObject, WIDTH_GRAPH, HEIGHT_GRAPH);
 		} catch (IOException e) {
 			e.printStackTrace();

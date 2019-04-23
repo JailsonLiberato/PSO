@@ -11,6 +11,7 @@ import business.topology.FocalTopology;
 import business.topology.GlobalTopology;
 import business.topology.LocalTopology;
 import model.Function;
+import util.Constants;
 
 public class Main {
 
@@ -36,7 +37,7 @@ public class Main {
 				values = psoService.executePSO(sphereFunction, focalTopology);
 				function.setFocals(chartItemService.convertFitnessArrayToChartItems(focalTopology, values));
 
-				JFreeChartUtil.createChart(sphereFunction, function);
+				JFreeChartUtil.createChart(Constants.SPHERE_CONSTANT_WEIGHT, function);
 			}
 		};
 
@@ -59,7 +60,7 @@ public class Main {
 				values = psoService.executePSO(rastringinFunction, focalTopology);
 				function.setFocals(chartItemService.convertFitnessArrayToChartItems(focalTopology, values));
 
-				JFreeChartUtil.createChart(rastringinFunction, function);
+				JFreeChartUtil.createChart(Constants.RASTRINGIN_CONSTANT_WEIGHT, function);
 			}
 		};
 
@@ -83,7 +84,7 @@ public class Main {
 				values = psoService.executePSO(rosenbrockFunction, focalTopology);
 				function.setFocals(chartItemService.convertFitnessArrayToChartItems(focalTopology, values));
 
-				JFreeChartUtil.createChart(rosenbrockFunction, function);
+				JFreeChartUtil.createChart(Constants.ROSENBROCK_CONSTANT_WEIGHT, function);
 				
 			}
 		};
