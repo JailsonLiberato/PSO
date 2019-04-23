@@ -15,19 +15,20 @@ public class FocalTopology implements Topology {
 
 		for (int i = 0; i < Constants.N_PARTICLES; i++) {
 			Particle particle = particles.get(i);
+			double r1 = generateRandomValue();
+			double r2 = generateRandomValue();
 			for (int j = 0; j < Constants.N_DIMENSIONS; j++) {
 				if (selectedParticle.equals(particle)) {
-					double r1 = generateRandomValue();
-					double r2 = generateRandomValue();
-					particle.getVelocity()[j] = particle.getVelocity()[j] * Constants.INERTIA
-							+ Constants.COEFFICIENT1 * r1 * (particle.getPbest()[j] - particle.getPosition()[j])
-							+ Constants.COEFFICIENT2 * r2 * (gBest[j] - particle.getPosition()[j]);
+					particles.get(i).getVelocity()[j] = (Constants.INERTIA * particles.get(i).getVelocity()[j])
+							+ Constants.COEFFICIENT1 * r1
+									* (particles.get(i).getPbest()[j] - particles.get(i).getPosition()[j])
+							+ Constants.COEFFICIENT2 * r2 * (gBest[j] - particles.get(i).getPosition()[j]);
 				} else {
-					double r1 = generateRandomValue();
-					double r2 = generateRandomValue();
-					particle.getVelocity()[j] = particle.getVelocity()[j] * Constants.INERTIA
-							+ Constants.COEFFICIENT1 * r1 * (particle.getPbest()[j] - particle.getPosition()[j])
-							+ Constants.COEFFICIENT2 * r2 * (selectedParticle.getPbest()[j] - particle.getPosition()[j]);
+					particles.get(i).getVelocity()[j] = (Constants.INERTIA * particles.get(i).getVelocity()[j])
+							+ Constants.COEFFICIENT1 * r1
+									* (particles.get(i).getPbest()[j] - particles.get(i).getPosition()[j])
+							+ Constants.COEFFICIENT2 * r2
+									* (selectedParticle.getPbest()[j] - particles.get(i).getPosition()[j]);
 
 				}
 

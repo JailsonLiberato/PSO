@@ -15,7 +15,6 @@ public class GlobalTopology implements Topology {
 		for (int i = 0; i < Constants.N_PARTICLES; i++) {
 			double r1 = random.nextDouble() * 1.0;
 			double r2 = random.nextDouble() * 1.0;
-			System.out.println(r1 + " " + r2);
 			for (int j = 0; j < Constants.N_DIMENSIONS; j++) {
 				particles.get(i).getVelocity()[j] = (Constants.INERTIA * particles.get(i).getVelocity()[j])
 						+ Constants.COEFFICIENT1 * r1

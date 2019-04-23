@@ -15,13 +15,14 @@ public class LocalTopology implements Topology {
 	public List<Particle> calculateVelocity(List<Particle> particles, double[] gBest, FitnessFunction fitnessFunction) {
 		calculateLBest(particles, fitnessFunction);
 		for (int i = 0; i < Constants.N_PARTICLES; i++) {
+			double r1 = generateRandomValue();
+			double r2 = generateRandomValue();
 			for (int j = 0; j < Constants.N_DIMENSIONS; j++) {
-				Particle particle = particles.get(i);
-				double r1 = generateRandomValue();
-				double r2 = generateRandomValue();
-				particle.getVelocity()[j] = particle.getVelocity()[j] * Constants.INERTIA
-						+ Constants.COEFFICIENT1 * r1 * (particle.getPbest()[j] - particle.getPosition()[j])
-						+ Constants.COEFFICIENT2 * r2 * (particle.getLbest()[j] - particle.getPosition()[j]);
+				particles.get(i).getVelocity()[j] = (Constants.INERTIA * particles.get(i).getVelocity()[j])
+						+ Constants.COEFFICIENT1 * r1
+								* (particles.get(i).getPbest()[j] - particles.get(i).getPosition()[j])
+						+ Constants.COEFFICIENT2 * r2
+								* (particles.get(i).getLbest()[j] - particles.get(i).getPosition()[j]);
 			}
 		}
 		return particles;
@@ -63,7 +64,7 @@ public class LocalTopology implements Topology {
 
 	public boolean isLimitExceed(FitnessFunction fitnessFunction, double[] positions) {
 		for (int i = 0; i < positions.length; i++) {
-			if (fitnessFunction.getBound() < positions[i]) {
+			if (fitnessFunction.getBound() < Math.abs(positions[i])) {
 				return true;
 			}
 

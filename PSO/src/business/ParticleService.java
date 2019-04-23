@@ -33,7 +33,7 @@ public class ParticleService {
 
 	private double generatePositionsByBounds(double bounds) {
 		Random random = new Random();
-		return random.nextDouble() * bounds;
+		return -bounds + random.nextDouble() * (bounds - -bounds);
 
 	}
 
